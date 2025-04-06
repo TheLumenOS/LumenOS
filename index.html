@@ -37,10 +37,10 @@
                 <a href="files/ReflectionsOfLight.txt">ReflectionsOfLight.txt</a>
             </div>
             <div class="file hidden">
-                <a href="files/EncryptedLog.dat">EncryptedLog.dat (Access Denied)</a>
+                <a href="#" id="hiddenFile1">EncryptedLog.dat (Access Restricted)</a>
             </div>
             <div class="file hidden">
-                <a href="files/SystemLogs.txt">SystemLogs.txt</a>
+                <a href="#" id="hiddenFile2">SystemLogs.txt (Access Restricted)</a>
             </div>
         </section>
     </div>
@@ -69,16 +69,16 @@
         function handleCommand(command) {
             const [cmd, ...args] = command.split(' ');
             if (cmd.toLowerCase() === 'help') {
-                return 'Commands: help, login <key>, clear, exit';
+                return 'Commands: help, login <key>, clear, files, exit';
             } else if (cmd.toLowerCase() === 'login') {
                 return handleLogin(args.join(' '));
             } else if (cmd.toLowerCase() === 'clear') {
                 document.getElementById('output').innerHTML = '';
                 return '';
-            } else if (cmd.toLowerCase() === 'exit') {
-                return 'Exiting the terminal... Goodbye.';
             } else if (cmd.toLowerCase() === 'files') {
                 return displayFiles();
+            } else if (cmd.toLowerCase() === 'exit') {
+                return 'Exiting the terminal... Goodbye.';
             }
             return `Unknown command: ${cmd}`;
         }
@@ -93,9 +93,12 @@
         }
 
         function revealHiddenFiles() {
+            document.getElementById('hiddenFile1').setAttribute('href', 'files/EncryptedLog.dat');
+            document.getElementById('hiddenFile2').setAttribute('href', 'files/SystemLogs.txt');
             const hiddenFiles = document.querySelectorAll('.file.hidden');
             hiddenFiles.forEach(file => {
                 file.classList.remove('hidden');
+                file.textContent = file.textContent.replace('(Access Restricted)', '');
             });
         }
 
