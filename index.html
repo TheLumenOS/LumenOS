@@ -5,19 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LumenOS Unified</title>
     <style>
-        /* General styles */
-        body {
-            font-family: 'Courier New', monospace;
-            background-color: #121212;
-            color: #eee;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        /* Styles omitted for brevity */
+        /* General styles omitted for brevity */
     </style>
 </head>
 <body>
@@ -34,19 +22,32 @@
         <!-- Home Section -->
         <section id="home">
             <h1>Welcome to LumenOS</h1>
-            <p class="pulse">Illuminate your path... Discover the truth hidden in the shadows.</p>
-            <p>Type commands into the terminal below:</p>
+            <p>Type commands into the terminal below to uncover hidden truths...</p>
             <div id="terminal">
                 <div class="prompt">LumenOS:~$ </div>
                 <div id="output"></div>
                 <input type="text" id="userInput" placeholder="Type command..." autofocus>
             </div>
         </section>
+
+        <!-- Documents Section (Hidden Files Access Control) -->
+        <section id="documents">
+            <h2>Documents</h2>
+            <div class="file">
+                <a href="files/ReflectionsOfLight.txt">ReflectionsOfLight.txt</a>
+            </div>
+            <div class="file hidden">
+                <a href="files/EncryptedLog.dat">EncryptedLog.dat (Access Denied)</a>
+            </div>
+            <div class="file hidden">
+                <a href="files/SystemLogs.txt">SystemLogs.txt</a>
+            </div>
+        </section>
     </div>
 
     <script>
-        // JavaScript for the terminal
-        const key = "IfindLighintheDarkness"; // Your secret key
+        let isLoggedIn = false; // Tracks login state
+        const key = "IfindLighintheDarkness"; // Secret key
 
         document.getElementById('userInput').addEventListener('keypress', function(event) {
             if (event.key === 'Enter') {
@@ -56,41 +57,53 @@
                 prompt.textContent = `LumenOS:~$ ${input}`;
                 output.appendChild(prompt);
 
-                // Handle commands
                 const response = document.createElement('div');
-                response.textContent = handleCommand(input); // Handle the command
+                response.textContent = handleCommand(input.trim());
                 output.appendChild(response);
 
                 event.target.value = '';
-                output.scrollTop = output.scrollHeight; // Scroll to the bottom
+                output.scrollTop = output.scrollHeight;
             }
         });
 
         function handleCommand(command) {
             const [cmd, ...args] = command.split(' ');
             if (cmd.toLowerCase() === 'help') {
-                return 'Available commands: help, login, clear, exit';
+                return 'Commands: help, login <key>, clear, exit';
             } else if (cmd.toLowerCase() === 'login') {
                 return handleLogin(args.join(' '));
             } else if (cmd.toLowerCase() === 'clear') {
                 document.getElementById('output').innerHTML = '';
                 return '';
             } else if (cmd.toLowerCase() === 'exit') {
-                return 'Goodbye!';
+                return 'Exiting the terminal... Goodbye.';
+            } else if (cmd.toLowerCase() === 'files') {
+                return displayFiles();
             }
             return `Unknown command: ${cmd}`;
         }
 
         function handleLogin(inputKey) {
             if (inputKey === key) {
+                isLoggedIn = true;
+                revealHiddenFiles();
                 return 'Login successful! Hidden files are now accessible.';
             }
             return 'Incorrect key. Access denied.';
         }
 
-        function reboot() {
-            alert('Rebooting... Please wait.');
-            window.location.reload(); // Simulate a reboot by reloading the page
+        function revealHiddenFiles() {
+            const hiddenFiles = document.querySelectorAll('.file.hidden');
+            hiddenFiles.forEach(file => {
+                file.classList.remove('hidden');
+            });
+        }
+
+        function displayFiles() {
+            if (!isLoggedIn) {
+                return 'Access denied. Please log in first.';
+            }
+            return 'Displaying hidden files...';
         }
     </script>
 </body>
